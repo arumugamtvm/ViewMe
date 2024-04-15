@@ -1,0 +1,12 @@
+.error-message {
+    color: red;
+}
+
+.success-message {
+    color: green;
+}
+
+.validation-message {
+    text-align: left;
+    width: 100%;
+}
