@@ -6,9 +6,8 @@ const { JWT_SECRET } = require('../config/constants')
 //Login
 const login = async (req, res) => {
     const { username, password } = req.body
-    console.log(username,password)
+    console.log(username, password)
     const user = await UserModel.findOne({ username: username })
-    console.log('USer ',user)
     if (!user)
         return res.status(400).json({ status: 'failed', message: 'Username Not Available' })
 
@@ -70,7 +69,7 @@ const isUsernameAvailable = async (req, res) => {
             message: 'Username Already Exists!'
         })
 
-     res.status(200).json({
+    res.status(200).json({
         status: 'Success',
         message: "Username is Available"
     })

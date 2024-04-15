@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import secureLocalStorage from 'react-secure-storage';
 import { postGetUserDetailsApi } from "../api/loginApi";
+import { AppContext } from "../App";
 
 const WelcomeComponent = () => {
+    const context = useContext(AppContext);
     const initialUserDetails = {
         fullname: '',
         username: '',
@@ -21,7 +23,7 @@ const WelcomeComponent = () => {
     }, [])
 
     const getUserDetails=async()=>{
-        const response=await postGetUserDetailsApi({username:username?.toString().toLowerCase()})
+        const response=await postGetUserDetailsApi(context.value,{username:username?.toString().toLowerCase()})
         if(response.status==200)
             setUserDetails(response?.data?.data)
     }

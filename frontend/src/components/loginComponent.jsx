@@ -1,12 +1,15 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { postCheckUsernameApi, postLoginUserApi, postRegisterUserApi } from "../api/loginApi";
 import secureLocalStorage from 'react-secure-storage';
 import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import * as Components from "./styledComponents";
+import { AppContext } from '../App'
 
 const LoginComponent = () => {
+    const context = useContext(AppContext);
+
     const navigate = useNavigate()
     const initialFormData = {
         username: '',
@@ -28,6 +31,7 @@ const LoginComponent = () => {
     const [loginFormValidationMsg, setLoginFormValidationMsg] = useState(initialLoginFormData)
     const [isloading, setIsloading] = useState(false)
 
+
     useEffect(() => {
         const username = secureLocalStorage.getItem('username');
         if (username != null || username != undefined)
@@ -38,11 +42,11 @@ const LoginComponent = () => {
         if (validateLoginForm()) {
             const payload = {
                 fullname: formData.name,
-                username: formData.username,
+                username: formData.username.toString(),
                 password: formData.password,
                 email: formData.email
             }
-            const response = await postRegisterUserApi(payload)
+            const response = await postRegisterUserApi(context.value, payload)
             if (response.status == 200) {
                 alert('User Registered Successfully!')
                 toggle(!islogin)
@@ -55,9 +59,9 @@ const LoginComponent = () => {
         if (validateLoginForm()) {
             const payload = {
                 username: loginFormData.login_username.toLowerCase(),
-                password: loginFormData.login_password.toLowerCase()
+                password: loginFormData.login_password
             }
-            const response = await postLoginUserApi(payload)
+            const response = await postLoginUserApi(context.value,payload)
             if (response.status == 200) {
                 alert('User Logged In Successfully!')
                 setIsloading(false)
@@ -90,6 +94,10 @@ const LoginComponent = () => {
                 setFormValidationMsg(prev => ({ ...prev, username: 'Please Enter Username' }))
                 isValid = false
             }
+            if (formData.password == '') {
+                setFormValidationMsg(prev => ({ ...prev, password: 'Please Enter Password' }))
+                isValid = false
+            }
             if (formData.password != formData.confirmPassword) {
                 setFormValidationMsg(prev => ({ ...prev, confirmPassword: 'Password & Confirm Password Should be same' }))
                 isValid = false
@@ -102,8 +110,9 @@ const LoginComponent = () => {
         const id = event.target.id;
         const value = event.target.value;
         setFormData(prev => ({ ...prev, [id]: value }))
+        setFormValidationMsg(prev => ({ ...prev, [id]: '' }))
         if (id == 'username') {
-            const response = await postCheckUsernameApi({ username: value.toLowerCase() })
+            const response = await postCheckUsernameApi(context.value,{ username: value.toLowerCase() })
             if (response.status == 200)
                 setFormValidationMsg(prev => ({ ...prev, username: response.data['message'] }))
             else
@@ -131,6 +140,7 @@ const LoginComponent = () => {
                     <Components.Input id='email' type="email" placeholder="Email" value={formData.email} onChange={onChangeForm} />
                     <span className={`validation-message error-message`}>{formValidationMsg.email}</span>
                     <Components.Input id='password' type="password" placeholder="Password" value={formData.password} onChange={onChangeForm} />
+                    <span className={`validation-message error-message`}>{formValidationMsg.password}</span>
                     <Components.Input id='confirmPassword' type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={onChangeForm} />
                     <span className={`validation-message error-message`}>{formValidationMsg.confirmPassword}</span>
                     <Components.Button onClick={onRegister}>Register</Components.Button>

@@ -1,4 +1,6 @@
 import axios from 'axios'
+import secureLocalStorage from 'react-secure-storage'
+
 
 export const clientService = async (method: string, endpoint: string, payload: any) => {
     try {
@@ -6,7 +8,8 @@ export const clientService = async (method: string, endpoint: string, payload: a
             method: method,
             url: endpoint,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': secureLocalStorage.getItem('token')?.toString()
             },
             data: payload
         }

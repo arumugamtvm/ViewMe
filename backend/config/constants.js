@@ -1,3 +1,1 @@
-const JWT_SECRET = 'Secret'
-
-module.exports = JWT_SECRET
+exports.JWT_SECRET = 'Secret'
