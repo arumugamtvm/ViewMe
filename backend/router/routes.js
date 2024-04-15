@@ -19,7 +19,7 @@ router.get('/users',userController.getAllUsers);
 router.post('/register',userController.register)
 router.post('/login',userController.login)
 router.post('/is_username_availabe',userController.isUsernameAvailable)
-router.post('/get_user_details',auth,userController.getUserDetailsByUsername)
+router.post('/get_user_details',userController.getUserDetailsByUsername)
 
 //Project
 
