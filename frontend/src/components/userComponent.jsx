@@ -27,6 +27,9 @@ const UserComponent = () => {
             const response = await postGetUserDetailsApi(context.value,{ username: usernameValue?.toString().toLowerCase() })
             if (response.status == 200)
                 setUserDetails(response?.data?.data)
+            else{
+                alert('No user found in this username : '-usernameValue)
+            }
         }
     }
 
